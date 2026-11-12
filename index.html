@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI SMS Sender</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;font-family:Arial,sans-serif;
+ background:#f1f5f9;color:#172033;
+}
+header{
+ background:#172554;color:white;
+ padding:22px;text-align:center;
+}
+main{
+ max-width:700px;margin:25px auto;
+ padding:20px;
+}
+.card{
+ background:white;padding:22px;
+ border-radius:15px;margin-bottom:18px;
+ box-shadow:0 3px 15px #0000000d;
+}
+h2{margin-top:0}
+input,textarea{
+ width:100%;padding:13px;
+ margin:9px 0;border:1px solid #cbd5e1;
+ border-radius:8px;font-size:15px;
+}
+textarea{min-height:120px;resize:vertical}
+button{
+ border:0;padding:13px 20px;
+ border-radius:8px;background:#2563eb;
+ color:white;font-size:15px;cursor:pointer;
+}
+button:disabled{opacity:.5}
+.stats{
+ display:flex;gap:12px;
+}
+.stat{
+ flex:1;background:#dbeafe;
+ padding:17px;border-radius:10px;
+ text-align:center;
+}
+.stat strong{display:block;font-size:25px}
+#status{color:#475569;margin-top:12px}
+</style>
+</head>
+<body>
+
+<header>
+<h1>🚀 AI SMS SENDER</h1>
+<p>Bulk SMS Management Dashboard</p>
+</header>
+
+<main>
+<div class="card">
+<h2>Dashboard</h2>
+<div class="stats">
+<div class="stat">
+<strong id="contacts">0</strong>
+Contacts
+</div>
+<div class="stat">
+<strong id="sent">0</strong>
+SMS Sent
+</div>
+</div>
+</div>
+
+<div class="card">
+<h2>📁 Upload Contacts</h2>
+<input type="file" id="file" accept=".csv,.txt">
+<p id="count">No contacts uploaded</p>
+</div>
+
+<div class="card">
+<h2>✉️ Write SMS</h2>
+<textarea id="message"
+placeholder="বাংলা অথবা English Message লিখুন..."></textarea>
+<p id="chars">0 characters</p>
+<button onclick="preview()">Preview Message</button>
+<p id="preview"></p>
+</div>
+
+<div class="card">
+<h2>📊 Sending Information</h2>
+<p>Maximum recipients: 100</p>
+<p>শুধু সম্মতিপ্রাপ্ত গ্রাহকদের SMS পাঠানো যাবে।</p>
+<button disabled>Connect SMS API to Send</button>
+<p id="status">SMS Gateway এখনো Connect করা হয়নি।</p>
+</div>
+</main>
+
+<script>
+let numbers=[];
+
+document.getElementById("file").addEventListener("change",async e=>{
+ const file=e.target.files[0];
+ if(!file)return;
+ const text=await file.text();
+ numbers=text.split(/\r?\n/)
+ .map(line=>line.split(",")[0].trim())
+ .filter(n=>/^\+?8801[3-9]\d{8}$/.test(n))
+ .slice(0,100);
+ document.getElementById("contacts").textContent=numbers.length;
+ document.getElementById("count").textContent=
+ numbers.length+" valid contacts loaded";
+});
+
+document.getElementById("message").addEventListener("input",e=>{
+ document.getElementById("chars").textContent=
+ e.target.value.length+" characters";
+});
+
+function preview(){
+ const msg=document.getElementById("message").value.trim();
+ document.getElementById("preview").textContent=
+ msg ? "Preview: "+msg : "Please write a message first.";
+}
+</script>
+
+</body>
+</html>
